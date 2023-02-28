@@ -22,6 +22,6 @@ for i in range(n):
 
 plt.step(data, ecdf)
 plt.xlabel('Значение')
-plt.ylabel('ЭФР')
+plt.ylabel('F(x)')
 plt.title('Эмпирическая функция распределения')
 plt.show()

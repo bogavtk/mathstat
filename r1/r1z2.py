@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
+import stats
 
 with open(r'C:\Users\Bogdan\Desktop\mathstat\3\r1z1.csv', 'r') as f:
     data = [float(x.strip()) for x in f.readlines()]
 
 # определяем количество интервалов гистограммы
-num_bins = 12
+num_bins = 10
 
 # вычисляем минимальное и максимальное значения данных
 min_val = min(data)
@@ -39,3 +40,5 @@ ax.set_xlabel('Значения')
 ax.set_ylabel('Вероятности')
 
 plt.show()
+
+print(stats.mode(data))

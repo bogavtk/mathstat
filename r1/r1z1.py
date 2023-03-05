@@ -1,7 +1,5 @@
 import csv
 
-import stats as stats
-
 data = []
 
 with open(r'C:\Users\Bogdan\Desktop\mathstat\3\r1z1.csv') as csv_file:

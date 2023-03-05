@@ -13,27 +13,41 @@ n = len(data)
 mean_x = sum([x for x, y in data]) / n
 mean_y = sum([y for x, y in data]) / n
 
-# Вычисление коэффициентов регрессии
-numerator = sum([(x - mean_x) * (y - mean_y) for x, y in data])
-denominator = sum([(x - mean_x) ** 2 for x, y in data])
-beta1 = numerator / denominator
-beta0 = mean_y - beta1 * mean_x
+# Вычисление дисперсии и среднего отклонения
+biased_variance_x = sum([(x - mean_x) ** 2 for x, y in data]) / n
+standard_deviation_x = biased_variance_x ** 0.5
 
-# Вычисление значения регрессии в заданной точке (например, x = 106)
-x = 105
-y_pred = beta0 + beta1 * x
-x_2 = 127
-y_2_pred = beta0 + beta1 * x_2
+biased_variance_y = sum([(y - mean_y) ** 2 for x, y in data]) / n
+standard_deviation_y = biased_variance_y ** 0.5
 
-list_x = [x, x_2]
-list_y = [y_pred, y_2_pred]
+# Выборочный коэф кореляции
+r = sum([(x - mean_x) * (y - mean_y) for x, y in data]) / (n * standard_deviation_x * standard_deviation_y)
 
+# Коэф регрессии
+
+b_xy = (r * standard_deviation_x) / standard_deviation_y
+
+y_1 = 78
+x_1 = mean_x + b_xy * (y_1 - mean_y)
+
+y_2 = 90
+x_2 = mean_x + b_xy * (y_2 - mean_y)
+
+k = b_xy
+b = mean_x - b_xy * mean_y
+
+# Поиск X по Y
+Y = 82
+X = k * Y + b
+
+list_x = [x_1, x_2]
+list_y = [y_1, y_2]
 
 # Построение графика рассеяния данных и линии регрессии
 plt.scatter([x for x, y in data], [y for x, y in data], color='blue', label='Данные')
 plt.plot(list_x, list_y, color='red', label='Регрессия')
-plt.plot(x, y_pred, 'o', color='green', label=f'Значение регрессии в x={x}: {y_pred:.2f}')
-plt.plot(x_2, y_2_pred, 'o', color='green')
+plt.plot(x_1, y_1, 'o', color='green')
+plt.plot(x_2, y_2, 'o', color='green')
 plt.xlabel('x')
 plt.ylabel('y')
 plt.legend()

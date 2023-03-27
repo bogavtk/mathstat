@@ -31,7 +31,7 @@ y_1 = 78
 x_1 = mean_x + b_xy * (y_1 - mean_y)
 
 y_2 = 90
-x_2 = mean_x + b_xy * (y_2 - mean_y)
+x_2 = mean_x + b_xy * (y_2 - mean_y)     
 
 k = b_xy
 b = mean_x - b_xy * mean_y
@@ -39,6 +39,7 @@ b = mean_x - b_xy * mean_y
 # Поиск X по Y
 Y = 82
 X = k * Y + b
+print(X)
 
 list_x = [x_1, x_2]
 list_y = [y_1, y_2]

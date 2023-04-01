@@ -29,7 +29,7 @@ cdf_values = expon.cdf(data, scale=1/lambda_)
 list_of_D_n = []
 
 for i in range(0, len(data)):
-    list_of_D_n.append(ecdf[i] - cdf_values[i])
+    list_of_D_n.append(abs(ecdf[i] - cdf_values[i]))
 
 D_n = max(list_of_D_n)
 

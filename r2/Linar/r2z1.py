@@ -2,7 +2,7 @@ import csv
 from scipy.stats import t
 from math import sqrt
 
-filename = r"C:\Users\Bogdan\Desktop\mathstat\3\r2z1.csv"
+filename = r"C:\Users\Bogdan\Desktop\mathstat\15\r2z1.csv"
 x_elem = []
 y = []
 with open(filename, "r") as csvfile:
@@ -24,7 +24,7 @@ print(f"Среднее значение 2 выборки: {y_mean}")
 
 df = n1 + n2 - 2  # Число степеней свободы
 
-alpha = 0.01
+alpha = 0.025
 
 variance_x = sum((x - x_mean) ** 2 for x in x) / n1
 variance_y = sum((y - y_mean) ** 2 for y in y) / n2
@@ -37,6 +37,7 @@ p_value = 2 * (1 - t.cdf(abs(t_stats), n1 + n2 - 2))
 print(f"Значение t-статистики: {t_stats}")
 print(f"Критическая константа: {critical_const}")
 print(f"p-value: {p_value}")
+
 
 if abs_t_stats > critical_const:
     print('Отвергаем H0')

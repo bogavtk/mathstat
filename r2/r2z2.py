@@ -1,6 +1,8 @@
 import csv
-from scipy.stats import expon
+from scipy.stats import expon, kstwobign, kstest, ksone
 from math import sqrt
+import numpy as np
+import matplotlib.pyplot as plt
 
 data = []
 
@@ -11,60 +13,76 @@ with open(r'C:\Users\Bogdan\Desktop\mathstat\3\r2z2.csv') as csv_file:
         data.append(float(row[0]))
 
 n = len(data)
-def efr(data):
-    n = len(data)
-    ecdf = [i / n for i in range(1, n + 1)]
-    data.sort()
-    ecdf = []
-    n = len(data)
-    for i in range(n):
-        ecdf.append((i + 1) / n)
+data.sort()
 
-    return ecdf
 
-ecdf = efr(data)
+def exp_cdf(x):
+    return expon.cdf(x, scale=1 / lambda_)
+
+
+def ecdf(data):
+    x = np.sort(data)
+    y = np.arange(1, len(data) + 1) / len(data)
+    return x, y
+
+
+def emperical_func(X):
+    cdf_vals = []
+    counts = {}
+    cumulative_count = 0
+
+    for x in X:
+        counts[x] = counts.get(x, 0) + 1
+
+    for x in sorted(counts):
+        cumulative_count += counts[x]
+        cdf_vals.append(cumulative_count / len(X))
+
+    return cdf_vals
+
+
+emperic_function = emperical_func(data)
+
+
 lambda_ = 1.5
-cdf_values = expon.cdf(data, scale=1/lambda_)
+expon_func = expon.cdf(data, scale=1 / lambda_)
+alpha = 0.01
 
 list_of_D_n = []
 
 for i in range(0, len(data)):
-    list_of_D_n.append(abs(ecdf[i] - cdf_values[i]))
+    list_of_D_n.append(abs(emperic_function[i] - expon_func[i]))
 
 D_n = max(list_of_D_n)
 
-F_kolmag = sqrt(n) * D_n
-print(F_kolmag)
+t_stats = D_n
+critical_const = kstwobign.ppf(1 - alpha)
+
+D, _ = kstest(data, expon.cdf, args=(0, 1 / 1.5))
+p_value = 1 - expon.cdf(np.sqrt(n) * D)
+
+print(f'Статистика: D = {D_n}, p-value = {p_value}')
+print(f'Критическая константа: {critical_const}')
+
+if t_stats > critical_const:
+    print('Отвергаем H0')
+elif t_stats < critical_const:
+    print('Не отвергаем H0')
+
+if p_value > alpha:
+    print("Гипотеза 0 не можем отвергнуть")
+else:
+    print("Гипотеза 0 отвергается")
+
+# Вычисление эмпирической функции распределения
 
 
-# Создаем нормальное распределение
-# mu, sigma = 0.5, sqrt(1.5)
-# X = norm(mu, sigma)
-#
-# # Задаем диапазон значений аргумента функции
-# x = np.linspace(-5, 5, num=1000)
-#
-# # Вычисляем значение функции плотности в заданных точках
-# pdf = X.pdf(x)
-#
-# # Строим график функции плотности
-# plt.plot(x, pdf)
-# plt.title("Нормальное распределение, μ=0.5, σ=sqrt(1.5)")
-# plt.xlabel("Значения")
-# plt.ylabel("Плотность вероятности")
-# plt.show()
-
-
-# x = np.linspace(min(data), max(data), 100)
-# cdf = stats.t.cdf(x, len(data) - 1)
-# plt.plot(x, cdf, label='Функция распределения')
-#
-# # Строим график эмпирической функции распределения (ЭФР)
-# x_sorted = np.sort(data)
-# y = np.arange(1, len(data) + 1) / len(data)
-#
-# # Строим график ЭФР
-# plt.step(x_sorted, y, label='ЭФР')
-#
-# plt.legend()
-# plt.show()
+# Построение графиков ЭФР и функции распределения
+x, y = ecdf(data)
+f = np.linspace(0, 5, 100)
+plt.plot(f, exp_cdf(f), 'r-', label='Экспоненциальное распределение')
+plt.plot(x, y, 'b.', markersize=5, label='Эмпирическая ЭФР')
+plt.xlabel('X')
+plt.ylabel('Кумулятивная вероятность')
+plt.legend(loc='lower right')
+plt.show()
